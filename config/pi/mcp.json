@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+    "codegraph": {
+      "command": "codegraph",
+      "args": ["serve", "--mcp"],
+      "directTools": true,
+      "lifecycle": "lazy"
+    },
+    "dap-debug": {
+      "command": "dap-mcp-server",
+      "args": [],
+      "lifecycle": "lazy"
+    },
+    "ast-grep": {
+      "command": "npx",
+      "args": ["-y", "ast-grep-mcp"],
+      "lifecycle": "lazy"
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["-y", "chrome-devtools-mcp@latest"],
+      "lifecycle": "lazy"
+    }
+  }
+}

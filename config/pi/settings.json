@@ -1,0 +1,15 @@
+{
+  "lastChangelogVersion": "0.0.0",
+  "defaultProvider": "deepseek",
+  "defaultModel": "deepseek-v4-pro",
+  "defaultThinkingLevel": "xhigh",
+  "packages": [
+    "npm:pi-subagents",
+    "npm:context-mode",
+    "npm:pi-mcp-adapter",
+    "npm:pi-web-access",
+    "npm:pi-codex-goal",
+    "npm:pi-multimodal-proxy"
+  ],
+  "theme": "dark"
+}

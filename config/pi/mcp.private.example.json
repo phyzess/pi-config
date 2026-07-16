@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "_comment": "此文件包含含密钥的 MCP 服务器配置。复制为 mcp.private.json 后填入真实值。不要提交到公开仓库。",
+    "gitlab": {
+      "type": "http",
+      "url": "https://YOUR_GITLAB_MCP_HOST/mcp/",
+      "headers": {
+        "gitlab_read_token": "YOUR_GITLAB_READ_TOKEN"
+      }
+    },
+    "atlassian": {
+      "type": "http",
+      "url": "https://YOUR_ATLASSIAN_MCP_HOST/mcp/",
+      "headers": {
+        "confluence-read-token": "YOUR_CONFLUENCE_READ_TOKEN",
+        "jira-read-token": "YOUR_JIRA_READ_TOKEN"
+      }
+    },
+    "figma": {
+      "command": "npx",
+      "args": ["-y", "figma-developer-mcp", "--figma-api-key=YOUR_FIGMA_API_KEY", "--stdio"]
+    }
+  }
+}

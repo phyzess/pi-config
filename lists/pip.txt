@@ -1,0 +1,4 @@
+# Python (pip) 依赖
+# 安装: pip3 install $(cat lists/pip.txt | grep -v '^#')
+
+debugpy          # Python 调试适配器（dap-mcp-server 需要）

@@ -1,0 +1,8 @@
+# 全局 npm 包（与 pi/agent 相关）
+# 安装: npm install -g $(cat lists/npm-global.txt | grep -v '^#')
+
+@earendil-works/pi-coding-agent    # pi 核心 CLI
+@colbymchenry/codegraph             # CodeGraph 代码知识图谱
+dap-mcp-server                      # DAP 调试桥接（lldb/debugpy/dlv）
+ast-grep-mcp                        # AST 结构化搜索/重写
+chrome-devtools-mcp                 # Chrome DevTools 浏览器自动化

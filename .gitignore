@@ -1,0 +1,13 @@
+# pi-config
+
+# 不提交真实密钥
+config/pi/mcp.private.json
+
+# 环境变量（含密钥）
+.env
+
+# 不提交 codegraph 索引
+.codegraph/
+
+# macOS
+.DS_Store
