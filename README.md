@@ -6,7 +6,7 @@
 ## 新机器快速启动
 
 ```bash
-git clone <this-repo-url> pi-config
+git clone git@github.com:phyzess/pi-config.git pi-config
 cd pi-config
 bash setup.sh            # 核心环境
 bash setup.sh --with-paseo  # 含 Paseo 多 agent 编排（可选）
