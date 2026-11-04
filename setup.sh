@@ -1,22 +1,13 @@
 #!/usr/bin/env bash
 # ============================================================
 # pi-config setup — 一键在新机器上复刻 pi agent 环境
-# 用法: bash setup.sh [--with-paseo]
-#   --with-paseo  同时部署 Paseo 配置和 paseo-* skills（可选）
+# 用法: bash setup.sh
 # ============================================================
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 DOT_PI="${PI_CODING_AGENT_DIR:-$HOME/.pi/agent}"
 DOT_AGENTS="$HOME/.agents"
-DOT_PASEO="$HOME/.paseo"
-
-WITH_PASEO=false
-for arg in "$@"; do
-    case "$arg" in
-        --with-paseo) WITH_PASEO=true ;;
-    esac
-done
 
 RED='\033[0;31m'; GREEN='\033[0;32m'; CYAN='\033[0;36m'; NC='\033[0m'
 info()  { echo -e "${CYAN}[info]${NC} $*"; }
@@ -133,40 +124,15 @@ elif [ -f "$PRIVATE_MCP" ]; then
     warn "  参考: $SCRIPT_DIR/config/env.example"
 fi
 
-# Paseo 配置（可选）
-if $WITH_PASEO; then
-    if [ -d "$DOT_PASEO" ] || mkdir -p "$DOT_PASEO" 2>/dev/null; then
-        cp "$SCRIPT_DIR/config/paseo/config.json" "$DOT_PASEO/config.json" 2>/dev/null && \
-            ok "~/.paseo/config.json" || warn "Paseo 配置写入失败（Paseo 可能未安装）"
-    fi
-else
-    info "跳过 Paseo 配置（使用 --with-paseo 启用）"
-fi
-
 # ---- Step 7: Skills ----
-info "部署核心 skills..."
+info "部署 skills..."
 mkdir -p "$DOT_AGENTS/skills"
-# 部署所有非 paseo 的 skills
+# 部署所有 skills
 for skill_dir in "$SCRIPT_DIR/skills"/*/; do
-    skill_name="$(basename "$skill_dir")"
-    case "$skill_name" in
-        paseo|paseo-*) continue ;;
-    esac
     cp -r "$skill_dir" "$DOT_AGENTS/skills/"
 done
-CORE_COUNT=$(ls "$DOT_AGENTS/skills" | grep -v "^paseo" | wc -l | tr -d ' ')
-ok "~/.agents/skills/ ($CORE_COUNT 核心 skills)"
-
-# 可选：paseo skills
-if $WITH_PASEO; then
-    info "部署 Paseo skills..."
-    for skill_dir in "$SCRIPT_DIR/skills"/paseo*/; do
-        [ -d "$skill_dir" ] && cp -r "$skill_dir" "$DOT_AGENTS/skills/"
-    done
-    ok "Paseo skills 已部署"
-else
-    info "跳过 Paseo skills（使用 --with-paseo 启用）"
-fi
+SKILL_COUNT=$(ls "$DOT_AGENTS/skills" | wc -l | tr -d ' ')
+ok "~/.agents/skills/ ($SKILL_COUNT skills)"
 
 # ---- Step 8: 环境变量提示 ----
 echo ""
@@ -184,13 +150,6 @@ echo ""
 echo "2. 初始化各项目的 codegraph 索引:"
 echo "   cd <project> && codegraph init"
 echo ""
-if $WITH_PASEO; then
-echo "3. 确保 Paseo daemon 在运行（桌面端或 CLI）:"
-echo "   paseo daemon status"
-echo ""
-echo "4. 重启 pi:"
-else
 echo "3. 重启 pi:"
-fi
 echo "   pi"
 echo ""

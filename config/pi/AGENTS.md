@@ -48,8 +48,7 @@
 Before committing changes that span >3 files or >50 lines:
 1. Re-read the full diff yourself — check for correctness, edge cases, and security issues.
 2. Fix any P0 issues you find. Note P1 issues in the commit message.
-3. If Paseo is available and the change is especially risky, optionally invoke `/paseo-advisor review this diff, focusing on correctness, edge cases, and security` for a second opinion.
-4. Commit only after review resolution.
+3. Commit only after review resolution.
 
 ## 8. Debugging Protocol
 When a bug is reported or a test fails unexpectedly:

@@ -1,7 +1,7 @@
 # pi-config
 
 > 一键在新机器上复刻 pi agent 完整环境。
-> 包含：pi 核心 + 6 个扩展包 + 14 个 MCP 服务器 + 20 个 skills + Paseo + AGENTS.md。
+> 包含：pi 核心 + 6 个扩展包 + 14 个 MCP 服务器 + 15 个 skills + AGENTS.md。
 
 ## 新机器快速启动
 
@@ -9,7 +9,6 @@
 git clone git@github.com:phyzess/pi-config.git pi-config
 cd pi-config
 bash setup.sh            # 核心环境
-bash setup.sh --with-paseo  # 含 Paseo 多 agent 编排（可选）
 ```
 
 搞定后重启 pi：`pi`
@@ -46,7 +45,7 @@ bash setup.sh --with-paseo  # 含 Paseo 多 agent 编排（可选）
 | shadcn | 前端 UI 开发 |
 | figma | 设计稿对接 |
 
-### Skills（15 个核心 + 5 个可选）
+### Skills（15 个）
 
 核心（默认部署）：
 ```
@@ -58,15 +57,6 @@ prototype     → 快速原型
 triage        → Issue 分类
 to-issues     → 计划→Issue 拆分
 ...等（共 15 个）
-```
-
-可选（`--with-paseo` 才部署）：
-```
-paseo         → Paseo daemon 控制
-paseo-advisor → 二次审查 agent
-paseo-committee → 多 agent 委员会决策
-paseo-handoff → 任务交接
-paseo-loop    → 循环任务编排
 ```
 
 ### 系统级依赖
@@ -107,7 +97,7 @@ bash setup.sh   # 自动检测并合并
 `config/pi/AGENTS.md` 定义了 agent 的全局行为：
 
 - **Discovery Phase**: codegraph 优先，grep/find 兜底
-- **Pre-Commit Review**: 大改动前 agent 自查 diff；有 Paseo 时可选触发 paseo-advisor
+- **Pre-Commit Review**: 大改动前 agent 自查 diff，先修 P0 再提交
 - **Debugging Protocol**: 优先用 dap 调试器，不是 print
 - **Memory**: 用 hindsight skill 积累跨会话记忆
 - **Token 意识**: 高频工具直接暴露（codegraph），低频工具代理发现（dap/ast-grep/chrome）
@@ -136,10 +126,8 @@ pi-config/
 │   │   ├── mcp.json              # MCP 公开服务器配置
 │   │   ├── mcp.private.example.json  # MCP 私有服务器模板
 │   │   └── AGENTS.md             # 全局行为规则
-│   ├── paseo/
-│   │   └── config.json           # Paseo daemon 配置
 │   └── env.example               # 环境变量模板
-├── skills/                       # 20 个 agent skills
+├── skills/                       # 15 个 agent skills
 ├── lists/
 │   ├── brew.txt                  # Homebrew 依赖
 │   ├── npm-global.txt            # 全局 npm 依赖
