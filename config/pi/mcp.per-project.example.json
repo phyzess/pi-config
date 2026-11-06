@@ -1,9 +1,9 @@
 {
-  "_comment": "放到需要这些 MCP 的仓库根目录下，命名为 .mcp.json 或 .pi/mcp.json。pi-mcp-adapter 会自动加载。",
+  "_comment": "按仓库启用的 MCP 模板。复制到目标仓库的 .pi/mcp.json（不是 .mcp.json），并在该仓库信任项目后 pi 才会加载。项目条目与同名用户级条目合并，只写 command/url/type 缺失的字段会覆盖 enabled/exposure/toolExposure。",
   "mcpServers": {
     "figma": {
       "command": "npx",
-      "args": ["-y", "figma-developer-mcp", "--figma-api-key=YOUR_FIGMA_API_KEY", "--stdio"]
+      "args": ["-y", "figma-developer-mcp", "--figma-api-key=${FIGMA_API_KEY}", "--stdio"]
     },
     "shadcn": {
       "command": "npx",

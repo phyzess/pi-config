@@ -1,4 +1,4 @@
 # Homebrew 依赖
-# 安装: brew install $(cat lists/brew.txt | grep -v '^#')
+# 由 setup.sh 逐条 brew install，已安装的跳过。格式: <包名>  # 说明
 
 ast-grep       # AST 结构化搜索（ast-grep-mcp 前置依赖）
