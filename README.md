@@ -1,162 +1,124 @@
 # pi-config
 
-> 一键在新机器上复刻 pi agent 完整环境。
-> 包含：pi 核心 + 6 个扩展包 + 14 个 MCP 服务器 + 15 个 skills + AGENTS.md。
+我的 pi agent 环境备份 + 在新机器上一键复刻。
 
-## 新机器快速启动
+同步方向：**本机 → 仓库**。日常直接改 `~/.pi/agent/`，之后用 `bash setup.sh --dry-run` 反查差异并手工回填到这里。
+
+## 快速启动
 
 ```bash
-git clone git@github.com:phyzess/pi-config.git pi-config
+git clone git@github.com:phyzess/pi-config.git
 cd pi-config
-bash setup.sh            # 核心环境
+bash setup.sh --dry-run   # 先看会做什么
+bash setup.sh             # 部署；已存在的文件一律跳过
 ```
 
-搞定后重启 pi：`pi`
+`setup.sh` 三种模式：
 
-## 包含什么
+| 参数 | 行为 |
+|---|---|
+| 无 | 只补缺失项，已存在的一律跳过 |
+| `--force` / `-f` | 覆盖 `~/.pi/agent` 下的配置（会盖掉本机改动） |
+| `--dry-run` / `-n` | 只打印动作，不落盘 |
 
-### pi 扩展包（6 个）
+## 仓库内容
+
+```
+config/pi/
+  settings.json              providers / packages / compaction / theme
+  AGENTS.md                  全局规则（中文）
+  mcp.json                   可移植 MCP 服务器（7 个）
+  mcp.private.example.json   私有 MCP 模板（gitlab / atlassian / figma）
+  mcp.per-project.example.json  按仓库启用的 MCP 模板
+  extensions/                本地 TypeScript 扩展（3 个）
+  i-have-adhd-always         ADHD 输出模式的常开标记
+config/env.example           环境变量模板
+lists/{brew,mise-tools,pip}.txt   CLI 依赖清单
+skills/                      自建 skills（5 个）
+setup.sh                     安装入口
+```
+
+### pi 扩展包（7 个）
+
 | 包 | 用途 |
-|----|------|
+|---|---|
 | pi-subagents | 子 agent 并行编排 |
-| context-mode | 上下文管理/FTS5 知识库 |
-| pi-mcp-adapter | MCP 协议支持 |
-| pi-web-access | 网页搜索+内容抓取 |
-| pi-codex-goal | 目标追踪 |
-| pi-multimodal-proxy | 多模态/图片处理 |
+| pi-web-access | 网页搜索 + 内容抓取 |
+| pi-hashline-edit-pro | 按锚点的精确编辑 |
+| pi-ask-user | 结构化单选/多选提问 |
+| pi-intercom | 多 pi 会话之间通信 |
+| @plannotator/pi-extension | 浏览器里评审方案 / 代码 / PR |
+| i-have-adhd | ADHD 输出模式（git 源） |
+
+包列表以 `config/pi/settings.json` 的 `packages` 为唯一来源，`setup.sh` 从这里读取（不硬编码）。
 
 ### MCP 服务器
 
-**全局服务器**（所有仓库可用，共 7 个）：
-| 服务器 | 用途 |
-|--------|------|
-| gitlab | GitLab API（公司内部，含 token） |
-| atlassian | Jira + Confluence（公司内部，含 token） |
-| context7 | 文档上下文查询 |
-| **codegraph** | 代码知识图谱（directTools） |
-| **dap-debug** | DAP 调试桥接（proxy 模式） |
-| **ast-grep** | AST 结构化搜索/重写（proxy 模式） |
-| **chrome-devtools** | 浏览器自动化（proxy 模式） |
+**公开 / 可移植（提交进仓库）**
 
-**按仓库启用的服务器**（复制 `config/pi/mcp.per-project.example.json` 到目标仓库的 `.mcp.json`）：
-| 服务器 | 适用场景 |
-|--------|---------|
-| cloudflare-* (5×) | Cloudflare Workers/Pages/R2 开发 |
-| shadcn | 前端 UI 开发 |
-| figma | 设计稿对接 |
+| 服务器 | 说明 |
+|---|---|
+| context7 | 库文档查询 |
+| codegraph | 代码知识图谱，`directTools` |
+| serena | 语义代码检索，`directTools` |
+| dap-debug | DAP 断点调试 |
+| ast-grep | 结构化搜索 / 改写 |
+| chrome-devtools | CDP 级浏览器调试 |
+| computer-use | macOS 桌面控制 |
 
-### Skills（15 个）
+**私有（走 `mcp.private.json`，已 gitignore）**
 
-核心（默认部署）：
-```
-codegraph     → 代码知识图谱使用引导
-hindsight     → 主动记忆 (retain/recall/reflect)
-diagnose      → 诊断调试
-tdd           → 测试驱动开发
-prototype     → 快速原型
-triage        → Issue 分类
-to-issues     → 计划→Issue 拆分
-...等（共 15 个）
-```
-
-### 系统级依赖
-```
-npm global: pi-coding-agent, codegraph, dap-mcp-server, ast-grep-mcp, chrome-devtools-mcp
-brew:       ast-grep
-pip:        debugpy
-```
-
-## 密钥配置
-
-部分 MCP 服务器需要 API token。配置方式：
+`gitlab`、`atlassian`、`figma` —— 复制模板填值：
 
 ```bash
-# 1. 创建环境变量文件
-cp config/env.example ~/.pi-agent-env
-
-# 2. 编辑填入真实值
-vim ~/.pi-agent-env
-
-# 3. 在 ~/.zshrc 末尾加载
-echo 'source ~/.pi-agent-env' >> ~/.zshrc
-source ~/.zshrc
-```
-
-私有 MCP 配置模板：`config/pi/mcp.private.example.json`
-
-复制并填入真实 token 后重命名为 `config/pi/mcp.private.json`，再运行 `setup.sh` 会自动合并。
-
-```
 cp config/pi/mcp.private.example.json config/pi/mcp.private.json
-# 编辑填入真实值，然后:
-bash setup.sh   # 自动检测并合并
+# 编辑填入真实 host / token
+bash setup.sh   # 自动合并进 ~/.pi/agent/mcp.json
 ```
 
-## AGENTS.md 行为规则
+token 建议不要写成明文，用 macOS keychain 取值：
 
-`config/pi/AGENTS.md` 定义了 agent 的全局行为：
+```json
+"gitlab_read_token": "!security find-generic-password -a $USER -s agent-mcp-gitlab -w"
+```
 
-- **Discovery Phase**: codegraph 优先，grep/find 兜底
-- **Pre-Commit Review**: 大改动前 agent 自查 diff，先修 P0 再提交
-- **Debugging Protocol**: 优先用 dap 调试器，不是 print
-- **Memory**: 用 hindsight skill 积累跨会话记忆
-- **Token 意识**: 高频工具直接暴露（codegraph），低频工具代理发现（dap/ast-grep/chrome）
+**按仓库启用**：把需要的服务器从 `config/pi/mcp.per-project.example.json` 拷到目标仓库根目录，命名为 `.mcp.json`。
 
-## 项目级初始化
+### Skills（5 个）
 
-新项目 clone 后还需要：
+`codegraph`、`diagnose`、`hindsight`、`improve-codebase-architecture`、`tdd`
+
+只放自建 skill。包自带的 skill 不复制（`@plannotator/pi-extension`、`pi-subagents`、`pi-intercom`、`pi-ask-user` 的 skill 由包自己提供）；`ego-browser` 是软链到 `~/.local/share/ego/ego-skills`，由 ego 安装器管理。
+
+部署目标：`~/.agents/skills/<name>`（已存在则跳过）。
+
+### extensions（3 个）
+
+| 文件 | 作用 |
+|---|---|
+| thin-cursor.ts | 去掉反色方块光标，露出终端硬件光标 |
+| herdr-agent-state.ts | herdr pane 里显示 agent 运行状态 |
+| openrouter-live.ts | OpenRouter 实时模型列表 |
+
+部署目标：`~/.pi/agent/extensions/`。与 `settings.json` 的 `showHardwareCursor: true` 配套。
+
+## 手动安装（不归 setup.sh 管）
+
+这三个用它自己的安装器：
 
 ```bash
-# 1. 初始化 codegraph 索引
-cd <project>
-codegraph init
+# pi 本体
+npm i -g @earendil-works/pi-coding-agent   # 或官方 installer，落到 ~/.local/bin/pi
 
-# 2. 确保 AGENTS.md 正确加载
-# pi 会自动从 ~/.pi/agent/AGENTS.md 和项目目录向上查找 AGENTS.md
+# codegraph
+curl -fsSL <codegraph install.sh> | sh     # 落到 ~/.codegraph/
+
+# serena
+uv tool install serena-agent               # 落到 ~/.local/share/uv/tools/
 ```
 
-## 文件结构
+`settings.json` 刻意不记录 `lastChangelogVersion`、`extensionChangelogVersions` —— 那两个键每次启动都变，写进仓库只会立刻产生 diff。
 
-```
-pi-config/
-├── setup.sh                      # 一键安装脚本
-├── config/
-│   ├── pi/
-│   │   ├── settings.json         # pi 设置（包列表/provider/thinking）
-│   │   ├── mcp.json              # MCP 公开服务器配置
-│   │   ├── mcp.private.example.json  # MCP 私有服务器模板
-│   │   └── AGENTS.md             # 全局行为规则
-│   └── env.example               # 环境变量模板
-├── skills/                       # 15 个 agent skills
-├── lists/
-│   ├── brew.txt                  # Homebrew 依赖
-│   ├── npm-global.txt            # 全局 npm 依赖
-│   └── pip.txt                   # Python 依赖
-└── .gitignore
-```
+## 已知偏差
 
-## 更新同步
-
-在新机器上拉取最新配置：
-
-```bash
-cd pi-config
-git pull
-bash setup.sh   # 覆盖更新配置和 skills
-```
-
-日常迭代后（新增 skill、调整配置）提交回 repo：
-
-```bash
-cd pi-config
-# skill 变更:
-cp -r ~/.agents/skills/<new-skill>/ skills/
-# 配置变更:
-cp ~/.pi/agent/settings.json config/pi/
-cp ~/.pi/agent/AGENTS.md config/pi/
-# 新增 MCP server:
-# 编辑 config/pi/mcp.json 或 mcp.private.example.json
-
-git add -A && git commit -m "sync: <描述>"
-git push
-```
+`setup.sh` 是单向拷贝，本机改动不会回流到仓库。新增包 / MCP / skill 之后，记得回来更新 `config/pi/settings.json`、`config/pi/mcp.json`、`skills/`。
