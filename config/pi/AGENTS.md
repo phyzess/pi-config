@@ -42,6 +42,17 @@
 - 浏览器任务(开网页、填表单、点击、截图、提取页面数据、Web 应用测试/QA)默认使用 ego-browser skill:先跑 `ego-browser skill`,再按其指引经 `ego-browser` CLI(ego lite)操作。
 - 不要默认用其他自动化工具(如 chrome-devtools MCP)启动 Chrome;仅当任务需要 ego-browser API 覆盖不了的 CDP 级调试时才使用。
 
+## 方案评审(Plannotator)
+
+`plannotator` 工具每个会话都可调用;若它不在工具列表里,直接说明并停下,不要静默跳过评审。
+
+- **触发即调用**:写完或改完方案/设计/规格类文档(`PLAN.md`、`spec*.md`、`docs/**/design*.md`、架构或接口设计说明)后,立刻调用 `plannotator` 工具(`gate: true`),不要先把全文贴进聊天等口头确认,也不要问"要不要开评审"
+- 用户说「评审/批注/看看这个/开评审」时,同样直接调用,不再二次确认
+- 只有两种豁免:文档自述为草稿或临时笔记(`*.draft.md`、`tmp/` 下),或用户当场明确说不用评审
+- 只是评审已有文档不必进 plan mode;需要我在批准前不动代码的规划才用 `/plannotator-plan-mode`(或用户按 Ctrl+Alt+P),写完计划后调 `plannotator_submit_plan`
+- 代码改动评审用 `plannotator` 工具的 review(PR/MR 传 URL);会话阻塞到人给出决定,不得 kill,重跑会恢复草稿
+- 评审返回的 feedback 就是本轮指令,立即处理;`approved` 附带的 notes 属建议,不算返工要求
+
 ## 语言
 
 - 代码/注释/docstring/日志/commit message:专业英语。

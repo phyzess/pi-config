@@ -10,6 +10,12 @@
       "directTools": true,
       "lifecycle": "lazy"
     },
+    "serena": {
+      "command": "serena",
+      "args": ["start-mcp-server", "--context=agent", "--project-from-cwd"],
+      "directTools": true,
+      "lifecycle": "lazy"
+    },
     "dap-debug": {
       "command": "dap-mcp-server",
       "args": [],
@@ -23,6 +29,11 @@
     "chrome-devtools": {
       "command": "npx",
       "args": ["-y", "chrome-devtools-mcp@latest"],
+      "lifecycle": "lazy"
+    },
+    "computer-use": {
+      "command": "npx",
+      "args": ["--yes", "--prefer-offline", "@zavora-ai/computer-use-mcp"],
       "lifecycle": "lazy"
     }
   }

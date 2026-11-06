@@ -1,11 +1,19 @@
 ---
 name: diagnose
-description: Disciplined diagnosis loop for hard bugs and performance regressions. Reproduce → minimise → hypothesise → instrument → fix → regression-test. Use when user says "diagnose this" / "debug this", reports a bug, says something is broken/throwing/failing, or describes a performance regression.
+description: Investigate hard bugs and performance regressions with a disciplined feedback loop. Diagnose and report by default; fix and regression-test only when the user authorizes a fix. Use for explicit diagnosis/debugging requests or difficult reproducible failures, not every routine error.
 ---
 
 # Diagnose
 
 A discipline for hard bugs. Skip phases only when explicitly justified.
+
+## Authorization boundary
+
+The user's request determines the stopping point:
+
+- For explanation, inspection, diagnosis, or root-cause reports, reproduce and investigate, then report evidence and recommended next steps without editing the product or applying a fix.
+- When the user explicitly asks to fix, implement, or resolve the problem, continue through the fix, cleanup, and regression verification phases.
+- If authorization is ambiguous, diagnose only. Building a temporary local repro or collecting read-only evidence does not imply permission to change production code or external systems.
 
 When exploring the codebase, use the project's domain glossary to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 
@@ -13,7 +21,7 @@ When exploring the codebase, use the project's domain glossary to get a clear me
 
 **This is the skill.** Everything else is mechanical. If you have a fast, deterministic, agent-runnable pass/fail signal for the bug, you will find the cause — bisection, hypothesis-testing, and instrumentation all just consume that signal. If you don't have one, no amount of staring at code will save you.
 
-Spend disproportionate effort here. **Be aggressive. Be creative. Refuse to give up.**
+Invest effort in proportion to the bug's impact and uncertainty. Try alternative feedback signals when the first approach is weak, but stop and report a concrete access or evidence blocker when further work cannot improve the signal.
 
 ### Ways to construct one — try them in roughly this order
 
@@ -64,7 +72,7 @@ Do not proceed until you reproduce the bug.
 
 ## Phase 3 — Hypothesise
 
-Generate **3–5 ranked hypotheses** before testing any of them. Single-hypothesis generation anchors on the first plausible idea.
+Generate several ranked hypotheses when the cause is not already established. Avoid anchoring on the first plausible idea, but do not invent extra hypotheses merely to satisfy a fixed count.
 
 Each hypothesis must be **falsifiable**: state the prediction it makes.
 
@@ -88,7 +96,7 @@ Tool preference:
 
 **Perf branch.** For performance regressions, logs are usually wrong. Instead: establish a baseline measurement (timing harness, `performance.now()`, profiler, query plan), then bisect. Measure first, fix second.
 
-## Phase 5 — Fix + regression test
+## Phase 5 — Fix + regression test (fix authorization required)
 
 Write the regression test **before the fix** — but only if there is a **correct seam** for it.
 

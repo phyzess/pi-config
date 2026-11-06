@@ -5,7 +5,7 @@ description: Agent-curated project memory — retain and recall key insights acr
 
 # Hindsight — Agent-Curated Project Memory
 
-Persistent, agent-curated memory for this project. Unlike passive search (context-mode FTS5), Hindsight is **active curation**: the agent decides what is worth remembering and writes it down. Next session, it loads automatically.
+Persistent, agent-curated memory for this project. Hindsight is **active curation**, not passive capture: the agent decides what is worth remembering and writes it down. Next session, it loads automatically.
 
 ## Memory Store
 
@@ -48,6 +48,12 @@ After completing a significant piece of work, take 30 seconds to reflect:
 2. What would have made this task faster if you knew it upfront?
 3. Retain the top 1-2 insights.
 
-## Integration with context-mode
+## 与其他记忆层的关系
 
-Hindsight entries complement context-mode's auto-captured events. Context-mode captures errors, decisions, and plans automatically; Hindsight captures strategic insights that require judgment. Both are searchable.
+Hindsight 存的是**需要判断力**的战略性洞察。另外三层负责别的,不要重复写:
+
+- `atlas/session-notes/`(`session-notes.ts` 归档)—— 各 harness 压缩时生成的会话摘要:自动、量大、未筛选。
+- `atlas/BOOTSTRAP.md` §5「记忆摘要」—— 开局自动装配最近的 hindsight 条目,所以写进来的洞察下一轮就会读到;这是 Hindsight 的**主要出口**。
+- `atlas/scripts/task-registry.ts` —— 跨 harness 的任务身份与恢复候选,回答「上次在做哪个工单」。
+
+分工的理由:自动捕获的事件量会淹没重点,而 Hindsight 由 agent 决定「什么值得记」—— 这是它不可替代的地方,也是它必须**少而精**的原因。

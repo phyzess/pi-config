@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "_comment": "此文件包含含密钥的 MCP 服务器配置。复制为 mcp.private.json 后填入真实值。不要提交到公开仓库。",
+    "_comment": "含密钥的 MCP 服务器。复制为 mcp.private.json 后填入真实值，setup.sh 会把它合并进 ~/.pi/agent/mcp.json。mcp.private.json 已被 .gitignore 忽略。",
     "gitlab": {
       "type": "http",
       "url": "https://YOUR_GITLAB_MCP_HOST/mcp/",
