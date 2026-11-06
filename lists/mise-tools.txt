@@ -1,0 +1,12 @@
+# Global CLI tools installed through mise (`mise use -g npm:<pkg>@<version>`)
+# Format: <npm package> <version>
+# setup.sh skips anything already installed.
+#
+# Not managed by mise (installed by their own installers):
+#   pi            -> @earendil-works/pi-coding-agent  (~/.local/bin/pi)
+#   codegraph     -> curl install script              (~/.codegraph/)
+#   serena        -> uv tool install serena-agent     (~/.local/share/uv/tools/)
+
+dap-mcp-server 0.1.17
+ast-grep-mcp 0.0.2
+chrome-devtools-mcp 1.10.1
